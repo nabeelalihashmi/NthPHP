@@ -1,10 +1,12 @@
 <?php
 
 use App\Controllers\HomeController;
+use App\Controllers\UserController;
 
 return [
     'active_controllers' => [
         HomeController::class,
+        UserController::class
     ],
     'not_found' => [
         HomeController::class, 'notFound'
