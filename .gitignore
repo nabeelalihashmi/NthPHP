@@ -1,0 +1,5 @@
+.directory
+vendor/
+cache/**/*
+logs/**/*
+public/uploads/

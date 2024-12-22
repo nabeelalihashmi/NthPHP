@@ -1,0 +1,7 @@
+Options -Indexes
+
+RewriteEngine On
+
+RewriteRule ^(~partytown|.well-known|public|favicon.ico|sitemap.xml|sitemap.min.xml|robots.txt|BingSiteAuth.xml|ads.txt)($|/) - [L]
+
+RewriteRule . index.php [L]
