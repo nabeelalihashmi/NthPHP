@@ -4,20 +4,18 @@ namespace Framework\Routing;
 
 use ReflectionMethod;
 use Framework\Attributes\Route;
+use Framework\Classes\Blade;
 
 class AutoRouteCollector
 {
-    public function collectRoutes(array $controllers)
+    public function collectRoutes(array $controllers, string $viewsDirectory)
     {
         $routes = [];
 
         foreach ($controllers as $controller) {
-            // Reflect on the controller class
             $controllerReflection = new \ReflectionClass($controller);
 
-            // Loop through each method of the controller
             foreach ($controllerReflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-                // Check if the method has a Route attribute
                 $routeAttributes = $method->getAttributes(Route::class);
 
                 foreach ($routeAttributes as $attribute) {
@@ -31,6 +29,32 @@ class AutoRouteCollector
                     ];
                 }
             }
+        }
+
+        if ($viewsDirectory) {
+            $bladeRoutes = $this->collectRoutesFromBladeViews($viewsDirectory);
+            $routes = array_merge($routes, $bladeRoutes);
+        }
+
+        return $routes;
+    }
+
+    private function collectRoutesFromBladeViews(string $viewsDirectory)
+    {
+        $routes = [];
+
+        $files = glob($viewsDirectory . '/*.blade.php');
+
+        foreach ($files as $file) {
+            $fileName = basename($file, '.blade.php');
+            $routePath = '/' . strtolower(str_replace('_', '/', $fileName));
+            $routes[] = [
+                'method' => 'GET',
+                'path' => $routePath,
+                'handler' => [function () use ($fileName) {
+                    echo Blade::run( '_pages.' . str_replace('/', '.', $fileName));
+                }]
+            ];
         }
 
         return $routes;

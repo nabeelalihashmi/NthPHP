@@ -1,5 +1,10 @@
 Options -Indexes
 
+php_flag display_errors Off
+php_flag log_errors On
+php_value error_log ./logs/error_log
+
+
 RewriteEngine On
 
 RewriteRule ^(~partytown|.well-known|public|favicon.ico|sitemap.xml|sitemap.min.xml|robots.txt|BingSiteAuth.xml|ads.txt)($|/) - [L]

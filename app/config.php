@@ -17,6 +17,14 @@ return [
     ],
 
     'routes_cache_enabled' => false,
-    'routes_cache_file' => __DIR__ . '/../cache/routes.cache',
-    'route_collection_cache_file' => __DIR__ . '/../cache/collector.cache'
+    'routes_cache_file' => __DIR__ . '/../cache/routes/routes.cache',
+    'route_collection_cache_file' => __DIR__ . '/../cache/routes/collector.cache',
+    'automatic_routes' => true,
+
+
+    'database' => [
+        'dsn' => 'mysql:host=localhost;dbname=test',
+        'username' => 'root',
+        'password' => ''
+    ]
 ];

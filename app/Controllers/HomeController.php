@@ -3,12 +3,21 @@
 namespace App\Controllers;
 
 use Framework\Attributes\Route;
-use Framework\HTTP\Responses\JSONResponse;
+use Framework\Classes\Blade;
 
 class HomeController {
 
     #[Route(['GET'], '/')]
     public function index() {
-        return new JSONResponse(['message' => 'Hello, World!']);
-    } 
+        echo Blade::run('home');
+    }
+
+
+    public function notFound() {
+        echo 'Not Found!';
+    }
+
+    public function methodNotAllowed() {
+        echo 'Not allowed!';
+    }
 }
