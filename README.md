@@ -1,6 +1,10 @@
-# NthPHP Framework
+<!-- image public/logo.php -->
 
-NthPHP is a fast, optimized PHP framework that simplifies web development by leveraging modern PHP features. It uses PHP attributes, automatic routing, Blade templating, and RedBeanPHP for database management.
+
+# NthPHP Framework
+![](public/logo.png)
+
+NthPHP is a fast, optimized PHP framework designed to simplify web development using modern PHP features. It provides high performance, leveraging **Swoole** for asynchronous, coroutine-based processing, allowing your application to handle thousands of requests concurrently. Additionally, it can run in a traditional PHP environment with **Apache**, **Nginx**, **LiteSpeed**, or any other similar web server, offering flexibility depending on your performance needs. The same code works seamlessly across all these environments without any changes.
 
 ## Key Features
 
@@ -9,14 +13,15 @@ NthPHP is a fast, optimized PHP framework that simplifies web development by lev
 - **Automatic Routing**: Routes are automatically collected from controllers, reducing the need for manual route registration.
 - **Blade Templating**: Uses **BladeOne** as the templating engine, with automatic routes generation from views stored in a specific folder (`/app/Views/_pages`).
 - **RedBeanPHP**: Uses **RedBeanPHP** for database interactions. No need for models, but models can be used if desired.
+- **Swoole Integration**: NthPHP can utilize **Swoole** for asynchronous, coroutine-based performance, dramatically improving scalability and handling of concurrent requests. It can run in **Swoole** for better performance without changing the core code base.
+- **Compatibility with Apache/Nginx/LiteSpeed**: NthPHP is fully compatible with traditional web servers like **Apache**, **Nginx**, and **LiteSpeed**. Whether you deploy on **Swoole** for concurrency and performance boosts or use a traditional web server, the same code works seamlessly across all environments, making the framework extremely flexible.
 
 ## Configuration
 
 The configuration is stored in `app/config.php` and includes settings for routing, controllers, views, and caching.
 
-<pre>
+```
 <?php
-
 use App\Controllers\HomeController;
 use App\Controllers\UserController;
 
@@ -25,7 +30,6 @@ return [
         HomeController::class,
         UserController::class
     ],
-
     'not_found' => [
         HomeController::class, 'notFound'
     ],
@@ -38,14 +42,23 @@ return [
     'routes_cache_file' => __DIR__ . '/../cache/routes/routes.cache',
     'route_collection_cache_file' => __DIR__ . '/../cache/routes/collector.cache',
     'automatic_routes' => true,
+
+
+    'database' => [
+        'dsn' => 'mysql:host=localhost;dbname=test',
+        'username' => 'root',
+        'password' => ''
+    ],
+
+    'swoole_static' => '/(partytown|.well-known|public|favicon.ico|sitemap.xml|sitemap.min.xml|robots.txt|BingSiteAuth.xml|ads.txt)($|\/)/',
 ];
-</pre>
+```
 
 ### Automatic Views Directory
 
 The framework uses **Blade** templating with the default directory for views located at `/app/Views`.
 
-If there are blade view files in `/app/Views/_pages`, they are considered as route.
+If there are blade view files in `/app/Views/_pages`, they are considered as routes.
 
 ## Documentation
 
@@ -63,12 +76,27 @@ If there are blade view files in `/app/Views/_pages`, they are considered as rou
 ## Usage
 
 1. Define routes in your controllers using PHP attributes.
-2. Views are automatically rendered based on routes, with Blade templating.
+
+```
+#[Route(method, uri, middleware)]
+
+#[Route(['GET', 'POST'], '/user/{name}', [AuthMiddleware::class])]
+
+```
+
+2. Views in `app/views/_pages` are automatically rendered based on routes, with Blade templating.
+
 3. Database interactions can be handled using **RedBeanPHP**, with or without models.
+
+4. The framework can run on **Swoole**, **Apache**, **Nginx**, **LiteSpeed**, or any other similar server environment without any changes to your code.
+
+```
+php server.php
+```
 
 ## Caching
 
-Please note that when routes are changed, and caching is set to true on config, please delete `cache/routes/collector.cache` and `cache/routes/routes.cache` files.
+Please note that when routes are changed, and caching is set to true in the config, please delete `cache/routes/collector.cache` and `cache/routes/routes.cache` files.
 
 ## Developer
 

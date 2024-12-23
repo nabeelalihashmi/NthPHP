@@ -4,20 +4,31 @@ namespace App\Controllers;
 
 use Framework\Attributes\Route;
 use Framework\Classes\Blade;
+use Framework\HTTP\Responses\JSONResponse;
+use Framework\HTTP\Responses\RedirectResponse;
 
 class HomeController {
 
     #[Route(['GET'], '/')]
     public function index() {
-        echo Blade::run('home');
+        return Blade::run('home');
     }
 
+    #[Route(['GET'], '/json')]
+    public function json() {
+        return new JSONResponse(['message' => 'Hello, World!']);
+    }
+
+    #[Route(['GET'], '/redirect')]
+    public function redirect() {
+        return new RedirectResponse('https://aliveforms.com');
+    }
 
     public function notFound() {
-        echo 'Not Found!';
+        return 'Not Found!';
     }
 
     public function methodNotAllowed() {
-        echo 'Not allowed!';
+        return 'Not allowed!';
     }
 }

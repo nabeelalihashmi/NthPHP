@@ -46,8 +46,6 @@ $dispatcher = FastRoute\cachedDispatcher(function (RouteCollector $r) use ($rout
 $httpMethod = $_SERVER['REQUEST_METHOD'];
 $uri = makeRequestUri();
 
-var_dump($uri);
-
 
 $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
 
@@ -67,7 +65,7 @@ switch ($routeInfo[0]) {
     case FastRoute\Dispatcher::FOUND:
         $handler = $routeInfo[1];
         if (is_callable($handler[0])) {
-            ($handler[0])();
+            handleResponse(($handler[0])());
             return;
         }
 
@@ -113,4 +111,3 @@ function makeRequestUri() {
     $uri = trim(preg_replace('~/{2,}~', '/', explode('?', $uri)[0]), '/');
     return $uri === '' ? '/' : "/{$uri}";
 }
-

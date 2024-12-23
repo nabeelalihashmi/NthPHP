@@ -26,5 +26,7 @@ return [
         'dsn' => 'mysql:host=localhost;dbname=test',
         'username' => 'root',
         'password' => ''
-    ]
+    ],
+
+    'swoole_static' => '/(partytown|.well-known|public|favicon.ico|sitemap.xml|sitemap.min.xml|robots.txt|BingSiteAuth.xml|ads.txt)($|\/)/',
 ];

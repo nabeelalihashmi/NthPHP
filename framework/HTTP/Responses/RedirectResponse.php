@@ -4,20 +4,13 @@ namespace Framework\HTTP\Responses;
 
 use Framework\HTTP\Response;
 
-class RedirectResponse extends Response
-{
-    private $url;
-    private $status;
+class RedirectResponse extends Response {
+    public function __construct(string $url, int $statusCode = 302, array $headers = []) {
+        parent::__construct('', $statusCode, $headers);
 
-    public function __construct(string $url, int $status = 302)
-    {
-        $this->url = $url;
-        $this->status = $status;
-    }
+        $this->setHeader('Location', $url);
 
-    public function send()
-    {
-        header('Location: ' . $this->url, true, $this->status);
-        exit;
+        $this->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+        $this->setHeader('Pragma', 'no-cache');
     }
 }

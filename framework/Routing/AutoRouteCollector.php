@@ -6,10 +6,8 @@ use ReflectionMethod;
 use Framework\Attributes\Route;
 use Framework\Classes\Blade;
 
-class AutoRouteCollector
-{
-    public function collectRoutes(array $controllers, string $viewsDirectory)
-    {
+class AutoRouteCollector {
+    public function collectRoutes(array $controllers, string $viewsDirectory) {
         $routes = [];
 
         foreach ($controllers as $controller) {
@@ -39,8 +37,7 @@ class AutoRouteCollector
         return $routes;
     }
 
-    private function collectRoutesFromBladeViews(string $viewsDirectory)
-    {
+    private function collectRoutesFromBladeViews(string $viewsDirectory) {
         $routes = [];
 
         $files = glob($viewsDirectory . '/*.blade.php');
@@ -52,7 +49,7 @@ class AutoRouteCollector
                 'method' => 'GET',
                 'path' => $routePath,
                 'handler' => [function () use ($fileName) {
-                    echo Blade::run( '_pages.' . str_replace('/', '.', $fileName));
+                    return Blade::run('_pages.' . str_replace('/', '.', $fileName));
                 }]
             ];
         }
