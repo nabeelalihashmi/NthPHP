@@ -46,6 +46,8 @@ $dispatcher = FastRoute\cachedDispatcher(function (RouteCollector $r) use ($rout
 $httpMethod = $_SERVER['REQUEST_METHOD'];
 $uri = makeRequestUri();
 
+var_dump($uri);
+
 
 $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
 
@@ -107,13 +109,8 @@ function makeRequestUri() {
     $dirname = dirname($script);
     $dirname = $dirname === '/' ? '' : $dirname;
     $basename = basename($script);
-    
-    // Extract the URI, removing the script's directory and basename
     $uri = str_replace([$dirname, $basename], "", $_SERVER['REQUEST_URI']);
-    
-    // Clear multiple slashes and trim the URI
-    $uri = trim(preg_replace('~/{2,}~', '/', $uri), '/');
-    
-    // Return the cleaned route, defaulting to '/' if empty
+    $uri = trim(preg_replace('~/{2,}~', '/', explode('?', $uri)[0]), '/');
     return $uri === '' ? '/' : "/{$uri}";
 }
+

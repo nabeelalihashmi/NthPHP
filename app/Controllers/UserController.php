@@ -10,6 +10,6 @@ class UserController {
 
     #[Route(['GET', 'POST'], '/user/{name}', [AuthMiddleware::class])]
     public function user($username) {
-        (new JSONResponse(['message' => 'Hello, ' . $username]))->send();
+        return new JSONResponse(['message' => 'Hello, ' . $username]);
     }
 }
