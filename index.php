@@ -2,6 +2,7 @@
 
 use Framework\Routing\AutoRouteCollector;
 use FastRoute\RouteCollector;
+use Framework\Classes\Config;
 use Framework\HTTP\Response;
 use RedBeanPHP\R;
 
@@ -9,18 +10,21 @@ define('DIR', __DIR__);
 
 require __DIR__ . '/vendor/autoload.php';
 
-$config = require 'app/config.php';
+Config::load('app/config.php');
 
-R::setup($config['database']['dsn'], $config['database']['username'], $config['database']['password']);
 
-$active_controllers = $config['active_controllers'];
-$notFoundHandler = $config['not_found'];
-$methodNotAllowedHandler = $config['method_not_allowed'];
-$cacheEnabled = $config['routes_cache_enabled'];
-$routeCacheFile = $config['routes_cache_file'];
-$routeCollectionCacheFile = $config['route_collection_cache_file'];
-$automaticRoutes = $config['automatic_routes'] ? DIR . '/app/Views/_pages' : false;
+$active_controllers         = Config::get('app.active_controllers');
+$notFoundHandler            = Config::get('routing.not_found');
+$methodNotAllowedHandler    = Config::get('routing.method_not_allowed');
+$cacheEnabled               = Config::get('routing.routes_cache_enabled');
+$routeCacheFile             = Config::get('routing.routes_cache_file');
+$routeCollectionCacheFile   = Config::get('routing.routes_collection_cache_file');
+$automaticRoutes            = Config::get('routing.automatic_routes');
+$dsn                        = Config::get('database.dsn');
+$username                   = Config::get('database.username');
+$password                   = Config::get('database.password');
 
+R::setup($dsn, $username, $password);
 if ($cacheEnabled && file_exists($routeCollectionCacheFile)) {
     $routes = unserialize(file_get_contents($routeCollectionCacheFile));
 } else {
@@ -32,7 +36,6 @@ if ($cacheEnabled && file_exists($routeCollectionCacheFile)) {
         file_put_contents($routeCollectionCacheFile, serialize($routes));
     }
 }
-
 
 $dispatcher = FastRoute\cachedDispatcher(function (RouteCollector $r) use ($routes) {
     foreach ($routes as $route) {
@@ -64,6 +67,11 @@ switch ($routeInfo[0]) {
 
     case FastRoute\Dispatcher::FOUND:
         $handler = $routeInfo[1];
+        if (is_string($handler[0]) && strpos($handler[0], '@render') === 0) {
+            $handler[0] = function () use ($handler) {
+                return \Framework\Classes\Blade::run(str_replace('@render:', '', $handler[0]));
+            };
+        }
         if (is_callable($handler[0])) {
             handleResponse(($handler[0])());
             return;

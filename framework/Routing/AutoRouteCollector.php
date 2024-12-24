@@ -4,9 +4,10 @@ namespace Framework\Routing;
 
 use ReflectionMethod;
 use Framework\Attributes\Route;
-use Framework\Classes\Blade;
+use Framework\Classes\Config;
 
 class AutoRouteCollector {
+
     public function collectRoutes(array $controllers, string $viewsDirectory) {
         $routes = [];
 
@@ -40,20 +41,37 @@ class AutoRouteCollector {
     private function collectRoutesFromBladeViews(string $viewsDirectory) {
         $routes = [];
 
-        $files = glob($viewsDirectory . '/*.blade.php');
+        $viewsDirectory = DIR . '/app/Views/' . $viewsDirectory;
+
+        $files = $this->getBladeFiles($viewsDirectory);
+
+        $base = Config::get('routing.automatic_routes');
 
         foreach ($files as $file) {
-            $fileName = basename($file, '.blade.php');
-            $routePath = '/' . strtolower(str_replace('_', '/', $fileName));
+            $relativePath = str_replace([$viewsDirectory . '/', '.blade.php'], '', $file);
+            $routePath = '/' . strtolower(str_replace(['_', '\\', '/'], '/', $relativePath));
+            $relativePath = str_replace('/', '.', $relativePath);
             $routes[] = [
                 'method' => 'GET',
                 'path' => $routePath,
-                'handler' => [function () use ($fileName) {
-                    return Blade::run('_pages.' . str_replace('/', '.', $fileName));
-                }]
+                'handler' => ['@render:' . $base . '.' . $relativePath]
             ];
         }
 
         return $routes;
+    }
+
+    private function getBladeFiles(string $directory): array {
+        $files = [];
+
+        foreach (glob($directory . '/*') as $file) {
+            if (is_dir($file)) {
+                $files = array_merge($files, $this->getBladeFiles($file));
+            } elseif (is_file($file) && str_ends_with($file, '.blade.php')) {
+                $files[] = $file;
+            }
+        }
+
+        return $files;
     }
 }
