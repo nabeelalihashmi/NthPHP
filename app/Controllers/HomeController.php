@@ -12,7 +12,6 @@ class HomeController {
     #[Route(['GET'], '/')]
     public function index() {
         return Blade::run('home');
-        
     }
 
     #[Route(['GET'], '/json')]

@@ -5,12 +5,15 @@ use FastRoute\RouteCollector;
 use Framework\Classes\Config;
 use Framework\HTTP\Response;
 use RedBeanPHP\R;
+use Tracy\Debugger;
 
 define('DIR', __DIR__);
 
 require __DIR__ . '/vendor/autoload.php';
 
 Config::load('app/config.php');
+
+Debugger::enable();
 
 
 $active_controllers         = Config::get('app.active_controllers');
@@ -25,6 +28,7 @@ $username                   = Config::get('database.username');
 $password                   = Config::get('database.password');
 
 R::setup($dsn, $username, $password);
+
 if ($cacheEnabled && file_exists($routeCollectionCacheFile)) {
     $routes = unserialize(file_get_contents($routeCollectionCacheFile));
 } else {

@@ -1,10 +1,9 @@
-<!-- image public/logo.php -->
-
-
 # NthPHP Framework
 ![](public/logo.png)
 
-NthPHP is a fast, optimized PHP framework designed to simplify web development using modern PHP features. It provides high performance, leveraging **Swoole** for asynchronous, coroutine-based processing, allowing your application to handle thousands of requests concurrently. Additionally, it can run in a traditional PHP environment with **Apache**, **Nginx**, **LiteSpeed**, or any other similar web server, offering flexibility depending on your performance needs. The same code works seamlessly across all these environments without any changes.
+NthPHP is a fast, optimized PHP framework designed to speed up and simplify web development using automatic routing and providing great developer experience. Not only it can run in a traditional PHP environment with **Apache**, **Nginx**, **LiteSpeed**, or any other similar web server, but also it provides high performance, leveraging **Swoole** for asynchronous, coroutine-based processing, allowing your application to handle thousands of requests concurrently without requiring any changes in code.
+
+Built around a clean and minimal architecture, NthPHP uses PHP attributes for routing, automatic routing for Blade views, a flexible Blade templating engine for views, and a powerful ORM (RedBeanPHP) for database access. With built-in support for middleware and an easy-to-use configuration system, it simplifies common tasks like request handling, email sending, and validation.
 
 ## Key Features
 
@@ -18,47 +17,21 @@ NthPHP is a fast, optimized PHP framework designed to simplify web development u
 
 ## Configuration
 
-The configuration is stored in `app/config.php` and includes settings for routing, controllers, views, and caching.
+The configuration is stored in `app/config.php` and includes settings for routing, controllers, views, server config etc. NthPHP provides a class `Config` to read the config with dot notation, with `Config::get` method to read the configuration.
 
 ```
-<?php
-use App\Controllers\HomeController;
-use App\Controllers\UserController;
-
-return [
-    'active_controllers' => [
-        HomeController::class,
-        UserController::class
-    ],
-    'not_found' => [
-        HomeController::class, 'notFound'
-    ],
-
-    'method_not_allowed' => [
-        HomeController::class, 'methodNotAllowed'
-    ],
-
-    'routes_cache_enabled' => false,
-    'routes_cache_file' => __DIR__ . '/../cache/routes/routes.cache',
-    'route_collection_cache_file' => __DIR__ . '/../cache/routes/collector.cache',
-    'automatic_routes' => true,
-
-
-    'database' => [
-        'dsn' => 'mysql:host=localhost;dbname=test',
-        'username' => 'root',
-        'password' => ''
-    ],
-
-    'swoole_static' => '/(partytown|.well-known|public|favicon.ico|sitemap.xml|sitemap.min.xml|robots.txt|BingSiteAuth.xml|ads.txt)($|\/)/',
-];
+    $baseUrl = Config::get('app.base_url');
 ```
 
 ### Automatic Views Directory
 
 The framework uses **Blade** templating with the default directory for views located at `/app/Views`.
 
-If there are blade view files in `/app/Views/_pages`, they are considered as routes.
+In routing, if `automatic_routes` have value other than `false`, e.g,
+```
+    'automatic_routes' => '_pages',
+```
+then blade view files in  `/app/Views/_pages`, are considered as routes.
 
 ## Documentation
 
@@ -103,6 +76,8 @@ Please note that when routes are changed, and caching is set to true in the conf
 This framework is developed by **Nabeel Ali**. You can connect with the developer on LinkedIn:
 
 - [Nabeel Ali](https://linkedin.com/in/nabeelalihashmi)
+- Co-Founder and Creator of [Aliveforms]('https://aliveforms.com')
+- Founder and Creator [Quizrella]('https://quizrella.com')
 
 ---
 

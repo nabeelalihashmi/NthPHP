@@ -31,35 +31,47 @@ class AutoRouteCollector {
         }
 
         if ($viewsDirectory) {
-            $bladeRoutes = $this->collectRoutesFromBladeViews($viewsDirectory);
+            $bladeRoutes = $this->collectRoutesFromBladeViews($viewsDirectory, $routes);
             $routes = array_merge($routes, $bladeRoutes);
         }
 
         return $routes;
     }
 
-    private function collectRoutesFromBladeViews(string $viewsDirectory) {
+    private function collectRoutesFromBladeViews(string $viewsDirectory, $controllerRoutes) {
         $routes = [];
-
+    
         $viewsDirectory = DIR . '/app/Views/' . $viewsDirectory;
-
+    
         $files = $this->getBladeFiles($viewsDirectory);
-
+    
         $base = Config::get('routing.automatic_routes');
-
+    
         foreach ($files as $file) {
             $relativePath = str_replace([$viewsDirectory . '/', '.blade.php'], '', $file);
+            
             $routePath = '/' . strtolower(str_replace(['_', '\\', '/'], '/', $relativePath));
+            
+            $routePath = preg_replace('#/(index)$#', '', $routePath) ?: '/';
+
+            foreach ($controllerRoutes as $controllerRoute) {
+                if ($controllerRoute['path'] === $routePath) {
+                    continue 2;
+                }
+            }
+    
+
             $relativePath = str_replace('/', '.', $relativePath);
             $routes[] = [
                 'method' => 'GET',
                 'path' => $routePath,
-                'handler' => ['@render:' . $base . '.' . $relativePath]
+                'handler' => ['@render:' . $base . '.' . $relativePath],
             ];
         }
-
+    
         return $routes;
     }
+    
 
     private function getBladeFiles(string $directory): array {
         $files = [];
