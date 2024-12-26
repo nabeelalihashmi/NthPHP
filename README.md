@@ -3,6 +3,12 @@
 
 NthPHP is a fast, optimized PHP framework designed to speed up and simplify web development using automatic routing and providing great developer experience. Not only it can run in a traditional PHP environment with **Apache**, **Nginx**, **LiteSpeed**, or any other similar web server, but also it provides high performance, leveraging **Swoole** for asynchronous, coroutine-based processing, allowing your application to handle thousands of requests concurrently without requiring any changes in code.
 
+![](screenshots/1.png)
+![](screenshots/2.png)
+![](screenshots/3.png)
+
+
+
 Built around a clean and minimal architecture, NthPHP uses PHP attributes for routing, automatic routing for Blade views, a flexible Blade templating engine for views, and a powerful ORM (RedBeanPHP) for database access. With built-in support for middleware and an easy-to-use configuration system, it simplifies common tasks like request handling, email sending, and validation.
 
 ## Key Features
