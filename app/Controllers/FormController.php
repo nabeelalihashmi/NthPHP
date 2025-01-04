@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Middleware\AuthMiddleware;
 use Framework\Attributes\Route;
 
 class FormController {
@@ -9,4 +10,5 @@ class FormController {
     public function submit() {
         return print_r($_POST, true);
     }
+    
 }

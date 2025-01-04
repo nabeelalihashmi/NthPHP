@@ -1,7 +1,12 @@
+
 # NthPHP Framework
-![](public/logo.png)
+
 
 NthPHP is a fast, optimized PHP framework designed to speed up and simplify web development using automatic routing and providing great developer experience. Not only it can run in a traditional PHP environment with **Apache**, **Nginx**, **LiteSpeed**, or any other similar web server, but also it provides high performance, leveraging **Swoole** for asynchronous, coroutine-based processing, allowing your application to handle thousands of requests concurrently without requiring any changes in code.
+
+<img src="public/logo.png" width="100">
+
+## Screenshots
 
 ![](screenshots/1.png)
 ![](screenshots/2.png)

@@ -8,8 +8,12 @@ use Framework\Classes\Config;
 
 class AutoRouteCollector {
 
-    public function collectRoutes(array $controllers, string $viewsDirectory) {
+    public function collectRoutes($controllers, string $viewsDirectory) {
         $routes = [];
+
+        if ($controllers === 'auto') {
+            $controllers = $this->findControllers();
+        }
 
         foreach ($controllers as $controller) {
             $controllerReflection = new \ReflectionClass($controller);
@@ -38,6 +42,38 @@ class AutoRouteCollector {
         return $routes;
     }
 
+    private function findControllers(): array {
+        $controllers = [];
+        $directory = DIR . '/app/Controllers';
+        
+        $files = $this->getPhpFiles($directory);
+
+        foreach ($files as $file) {
+            $relativePath = str_replace([$directory . '/', '.php'], '', $file);
+            $className = str_replace('/', '\\', 'App\\Controllers\\' . $relativePath);
+
+            if (class_exists($className)) {
+                $controllers[] = $className;
+            }
+        }
+
+        return $controllers;
+    }
+
+    private function getPhpFiles(string $directory): array {
+        $files = [];
+
+        foreach (glob($directory . '/*') as $file) {
+            if (is_dir($file)) {
+                $files = array_merge($files, $this->getPhpFiles($file));
+            } elseif (is_file($file) && str_ends_with($file, '.php')) {
+                $files[] = $file;
+            }
+        }
+
+        return $files;
+    }
+
     private function collectRoutesFromBladeViews(string $viewsDirectory, $controllerRoutes) {
         $routes = [];
     
@@ -50,7 +86,7 @@ class AutoRouteCollector {
         foreach ($files as $file) {
             $relativePath = str_replace([$viewsDirectory . '/', '.blade.php'], '', $file);
             
-            $routePath = '/' . strtolower(str_replace(['_', '\\', '/'], '/', $relativePath));
+            $routePath = '/' . strtolower(str_replace(['\\', '/'], '/', $relativePath));
             
             $routePath = preg_replace('#/(index)$#', '', $routePath) ?: '/';
 
@@ -71,7 +107,6 @@ class AutoRouteCollector {
     
         return $routes;
     }
-    
 
     private function getBladeFiles(string $directory): array {
         $files = [];

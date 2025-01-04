@@ -1,0 +1,49 @@
+#!/usr/bin/env php
+<?php
+
+use Framework\Classes\Config;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+define('DIR', __DIR__ . '/..');
+
+Config::load(DIR . '/app/config.php');
+
+$commands = [];
+
+$commandFiles = glob(__DIR__ . '/Commands/*.php');
+foreach ($commandFiles as $file) {
+    require_once $file;
+
+    $commandClass = 'Cli\\Commands\\' . basename($file, '.php'); // Dynamically build the class name
+
+    if (class_exists($commandClass)) {
+        $commands[] = new $commandClass();
+    }
+}
+
+if ($argc < 2) {
+    echo "Available Commands:\n";
+    foreach ($commands as $command) {
+        echo $command->getName() . ' - ' . $command->getDescription() . "\n";
+    }
+    exit(0);
+}
+
+$commandName = $argv[1];
+$options = array_slice($argv, 2);
+$commandFound = false;
+
+foreach ($commands as $command) {
+    if ($command->getName() === $commandName) {
+        $command->execute($options);  // Execute the command with options
+        $commandFound = true;
+        break;
+    }
+}
+
+// If the command isn't found, show an error message
+if (!$commandFound) {
+    echo "Command '{$commandName}' not found.\n";
+    exit(1);
+}

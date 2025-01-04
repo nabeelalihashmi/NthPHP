@@ -30,14 +30,14 @@ $password                   = Config::get('database.password');
 R::setup($dsn, $username, $password);
 
 if ($cacheEnabled && file_exists($routeCollectionCacheFile)) {
-    $routes = unserialize(file_get_contents($routeCollectionCacheFile));
+    $routes = include $routeCollectionCacheFile;
 } else {
-
     $routeCollector = new AutoRouteCollector();
     $routes = $routeCollector->collectRoutes($active_controllers, $automaticRoutes);
 
     if ($cacheEnabled) {
-        file_put_contents($routeCollectionCacheFile, serialize($routes));
+        $exportedRoutes = "<?php\n\nreturn " . var_export($routes, true) . ";\n";
+        file_put_contents($routeCollectionCacheFile, $exportedRoutes);
     }
 }
 
@@ -60,13 +60,13 @@ switch ($routeInfo[0]) {
     case FastRoute\Dispatcher::NOT_FOUND:
         [$controller, $method] = $notFoundHandler;
         $controllerInstance = new $controller();
-        call_user_func([$controllerInstance, $method]);
+        handleResponse(call_user_func([$controllerInstance, $method]));
         break;
 
     case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
         [$controller, $method] = $methodNotAllowedHandler;
         $controllerInstance = new $controller();
-        call_user_func([$controllerInstance, $method]);
+        handleResponse(call_user_func([$controllerInstance, $method]));
         break;
 
     case FastRoute\Dispatcher::FOUND:
@@ -123,3 +123,23 @@ function makeRequestUri() {
     $uri = trim(preg_replace('~/{2,}~', '/', explode('?', $uri)[0]), '/');
     return $uri === '' ? '/' : "/{$uri}";
 }
+
+
+function getCurrentUrl(array $params = []) {
+    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
+    $current_url = "$protocol://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+    $url = parse_url($current_url, PHP_URL_PATH);
+    $query = [];
+    if (isset($_SERVER['QUERY_STRING'])) {
+        parse_str($_SERVER['QUERY_STRING'], $query);
+    }
+ 
+    $query = array_merge($query, $params);
+    $url .= '?' . http_build_query($query);
+ 
+    return $url;
+ }
+
+ function cfg($key) {
+    return Config::get($key);
+ }

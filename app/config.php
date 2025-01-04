@@ -3,21 +3,18 @@
 return [
 
     'app' => [
-        'active_controllers' => [
-            App\Controllers\HomeController::class,
-            App\Controllers\UserController::class,
-            App\Controllers\FormController::class
-        ],
+        'active_controllers' => 'auto',
         'app_key' => 'your_key',
-        'base_url' => 'http://localhost/NthPHP/',
+        'base_url' => 'http://localhost/NthPHP',
+        'app_name' => 'NthPHP',
     ],
 
     'routing' => [
         'not_found' => [App\Controllers\HomeController::class, 'notFound'],
         'method_not_allowed' => [App\Controllers\HomeController::class, 'methodNotAllowed'],
         'routes_cache_enabled' => false,
-        'routes_cache_file' => DIR . '/cache/routes/routes.cache',
-        'routes_collection_cache_file' => DIR . '/cache/routes/collector.cache',
+        'routes_cache_file' => DIR . '/cache/routes/routes.php',
+        'routes_collection_cache_file' => DIR . '/cache/routes/collector.php',
         'automatic_routes' => '_pages',
     ],
 

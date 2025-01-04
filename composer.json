@@ -10,12 +10,14 @@
         "rakit/validation": "^1.4",
         "phpmailer/phpmailer": "^6.9",
         "hashids/hashids": "^5.0",
-        "tracy/tracy": "^2.10"
+        "tracy/tracy": "^2.10",
+        "delight-im/auth": "^8.3"
     },
     "autoload": {
         "psr-4": {
             "App\\": "app/",
-            "Framework\\": "framework/"
+            "Framework\\": "framework/",
+            "Cli\\": "cli/"
         }
     },
     "scripts": {
