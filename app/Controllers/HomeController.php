@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Middleware\LoginCheckMiddleware;
 use Framework\Attributes\Route;
 use Framework\Classes\Blade;
 use Framework\HTTP\Responses\JSONResponse;
@@ -16,7 +17,7 @@ class HomeController {
     }
     
 
-    #[Route(['GET'], '/')]
+    #[Route(['GET'], '/', [LoginCheckMiddleware::class])]
     public function index() {
         return Blade::run('home');
     }

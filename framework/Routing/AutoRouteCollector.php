@@ -3,12 +3,14 @@
 namespace Framework\Routing;
 
 use ReflectionMethod;
+use ReflectionClass;
 use Framework\Attributes\Route;
+use Framework\Attributes\Crud;
 use Framework\Classes\Config;
 
 class AutoRouteCollector {
 
-    public function collectRoutes($controllers, string $viewsDirectory) {
+    public function collectRoutes($controllers) {
         $routes = [];
 
         if ($controllers === 'auto') {
@@ -16,14 +18,21 @@ class AutoRouteCollector {
         }
 
         foreach ($controllers as $controller) {
-            $controllerReflection = new \ReflectionClass($controller);
+            $controllerReflection = new ReflectionClass($controller);
 
+            // Check for Crud attribute
+            $crudAttribute = $controllerReflection->getAttributes(Crud::class)[0] ?? null;
+            if ($crudAttribute) {
+                $crud = $crudAttribute->newInstance();
+                $routes = array_merge($routes, $this->generateCrudRoutes($crud, $controller));
+            }
+
+            // Collect routes from the Route attributes in the controller methods
             foreach ($controllerReflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
                 $routeAttributes = $method->getAttributes(Route::class);
 
                 foreach ($routeAttributes as $attribute) {
                     $routeInstance = $attribute->newInstance();
-
                     $routes[] = [
                         'method' => $routeInstance->method,
                         'path' => $routeInstance->path,
@@ -34,9 +43,67 @@ class AutoRouteCollector {
             }
         }
 
-        if ($viewsDirectory) {
-            $bladeRoutes = $this->collectRoutesFromBladeViews($viewsDirectory, $routes);
-            $routes = array_merge($routes, $bladeRoutes);
+        // Collect routes from Blade views
+        $viewsDirectories = Config::get('routing.automatic_routes');
+        if (!empty($viewsDirectories)) {
+            foreach($viewsDirectories as $viewsDirectory) {
+                $bladeRoutes = $this->collectRoutesFromBladeViews($viewsDirectory, $routes);
+                $routes = array_merge($routes, $bladeRoutes);
+            }
+        }
+
+        return $routes;
+    }
+
+    private function generateCrudRoutes(Crud $crud, $controller) {
+        $routes = [];
+        $path = $crud->path;
+
+        foreach ($crud->enabledMethods as $method) {
+            $middleware = $crud->middlewares[$method] ?? [];
+
+            switch ($method) {
+                case 'index':
+                    $routes[] = [
+                        'method' => 'GET',
+                        'path' => $path,
+                        'handler' => [$controller, 'index'],
+                        'middleware' => $middleware
+                    ];
+                    break;
+                case 'show':
+                    $routes[] = [
+                        'method' => 'GET',
+                        'path' => $path . '/{id}',
+                        'handler' => [$controller, 'show'],
+                        'middleware' => $middleware
+                    ];
+                    break;
+                case 'create':
+                    $routes[] = [
+                        'method' => 'POST',
+                        'path' => $path,
+                        'handler' => [$controller, 'create'],
+                        'middleware' => $middleware
+                    ];
+                    break;
+                case 'update':
+                    $routes[] = [
+                        'method' => 'PUT',
+                        'path' => $path . '/{id}',
+                        'handler' => [$controller, 'update'],
+                        'middleware' => $middleware
+                    ];
+                    break;
+                case 'delete':
+                    $routes[] = [
+                        'method' => 'DELETE',
+                        'path' => $path . '/{id}',
+                        'handler' => [$controller, 'delete'],
+                        'middleware' => $middleware
+                    ];
+                    break;
+            }
         }
 
         return $routes;
@@ -77,12 +144,12 @@ class AutoRouteCollector {
     private function collectRoutesFromBladeViews(string $viewsDirectory, $controllerRoutes) {
         $routes = [];
     
+        $base = str_replace('/', '.', $viewsDirectory); 
+
         $viewsDirectory = DIR . '/app/Views/' . $viewsDirectory;
     
         $files = $this->getBladeFiles($viewsDirectory);
-    
-        $base = Config::get('routing.automatic_routes');
-    
+        
         foreach ($files as $file) {
             $relativePath = str_replace([$viewsDirectory . '/', '.blade.php'], '', $file);
             
@@ -91,7 +158,13 @@ class AutoRouteCollector {
             $routePath = preg_replace('#/(index)$#', '', $routePath) ?: '/';
 
             foreach ($controllerRoutes as $controllerRoute) {
-                if ($controllerRoute['path'] === $routePath) {
+                $is_get = false;
+                if (is_string($controllerRoute['method'])) {
+                    $is_get = $controllerRoute['method'] == 'GET';
+                } else {
+                    $is_get = in_array('GET', $controllerRoute['method']);
+                }
+                if ($controllerRoute['path'] == $routePath && $is_get) {
                     continue 2;
                 }
             }

@@ -22,6 +22,10 @@ class Blade {
         return self::$_instance;
     }
 
+    public static function inputToken($fullToken = true, $tokenId = '_token') {
+        return "<input type='hidden' name='{$tokenId}' value='" .  Blade::instance()->getCsrfToken(true, $tokenId)  . '\'>';
+    }
+
     public static function run($view, $vars = []) {
         return self::instance()->run($view, $vars);
     }

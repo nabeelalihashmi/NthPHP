@@ -12,6 +12,8 @@ define('DIR', __DIR__);
 require __DIR__ . '/vendor/autoload.php';
 
 Config::load('app/config.php');
+define('BASEURL', Config::get('app.base_url'));
+define('APPNAME', Config::get('app.app_name'));
 
 Debugger::enable();
 

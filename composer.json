@@ -1,6 +1,6 @@
 {
     "name": "nabeelalihashmi/nthphp",
-    "description": "NthPHP framework - A fast, optimized PHP framework using PHP attributes, Blade templating, and RedBeanPHP.",
+    "description": "A fast, optimized PHP framework using PHP attributes, automatic routing of Blade views, and RedBeanPHP.",
     "type": "project",
     "require": {
         "nikic/fast-route": "^1.3",

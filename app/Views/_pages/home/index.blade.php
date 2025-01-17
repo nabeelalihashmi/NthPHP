@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('layouts.Main')
 
 @section('title', 'Home - NthPHP')
 

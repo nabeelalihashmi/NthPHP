@@ -40,9 +40,9 @@ The framework uses **Blade** templating with the default directory for views loc
 
 In routing, if `automatic_routes` have value other than `false`, e.g,
 ```
-    'automatic_routes' => '_pages',
+    'automatic_routes' => ['_pages', '_other_dir_in_views' ]
 ```
-then blade view files in  `/app/Views/_pages`, are considered as routes.
+then blade view files in  `/app/Views/_pages` and `_other_dir_in_views`, are considered as routes.
 
 ## Documentation
 

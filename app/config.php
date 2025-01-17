@@ -15,7 +15,7 @@ return [
         'routes_cache_enabled' => false,
         'routes_cache_file' => DIR . '/cache/routes/routes.php',
         'routes_collection_cache_file' => DIR . '/cache/routes/collector.php',
-        'automatic_routes' => '_pages',
+        'automatic_routes' => ['_pages', '_auth/forms_auto'],
     ],
 
 
