@@ -19,7 +19,7 @@ class HomeController {
 
     #[Route(['GET'], '/', [LoginCheckMiddleware::class])]
     public function index() {
-        return Blade::run('home');
+        return Blade::view('home');
     }
 
     #[Route(['GET'], '/json')]
@@ -74,5 +74,10 @@ class HomeController {
 
             sleep(1);
         }
+    }
+
+    #[Route(['POST'], '/ajax')]
+    public function postAjax() {
+        return new JSONResponse(['success' => true, 'message' => 'Hello, ' . $_POST['first_name']]);
     }
 }

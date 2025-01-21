@@ -89,7 +89,7 @@ $server->on("request", function (Request $req, SwooleResponse $res) use ($dispat
             $handler = $routeInfo[1];
             if (is_string($handler[0]) && strpos($handler[0], '@render') === 0) {
                 $handler[0] = function () use ($handler) {
-                    return \Framework\Classes\Blade::run(str_replace('@render:', '', $handler[0]));
+                    return \Framework\Classes\Blade::view(str_replace('@render:', '', $handler[0]));
                 };
             }
 

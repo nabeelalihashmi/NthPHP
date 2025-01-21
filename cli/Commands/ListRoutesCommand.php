@@ -10,7 +10,7 @@ use ReflectionMethod;
 class ListRoutesCommand extends BaseCommand {
 
     public function __construct() {
-        parent::__construct("list:routes", "List all the routes with their method, URI, and file path.");
+        parent::__construct("routes:list", "List all the routes with their method, URI, and file path.");
     }
 
     public function execute(array $options): void {

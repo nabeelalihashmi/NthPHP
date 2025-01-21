@@ -13,7 +13,7 @@ class LoginCheckMiddleware {
             if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
                 return new JSONResponse(['success' => false, 'error' => 'AUTH', 'message' => 'This account has been suspended.']);
             }
-            return Blade::run('_auth.message', ['heading' => 'This account has been suspended.', 'message' => '<a href="'. BASEURL .'/logout">Logout</a>']);
+            return Blade::view('_auth.message', ['heading' => 'This account has been suspended.', 'message' => '<a href="'. BASEURL .'/logout">Logout</a>']);
         }
         if (Auth::getInstance()->isLoggedIn() === false) {
             if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {

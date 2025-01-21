@@ -18,6 +18,12 @@ return [
         'automatic_routes' => ['_pages', '_auth/forms_auto'],
     ],
 
+    'blade' => [
+        'pipes' => true,
+        'mode'  => 0,
+        'comment_mode' => 0
+    ],
+
 
     'database' => [
         'dsn' => 'mysql:host=localhost;dbname=test',

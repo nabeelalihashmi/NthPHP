@@ -80,7 +80,7 @@ class AuthController {
             $auth = Auth::getInstance();
             // uncomment this for production
             // $userId = $auth->registerWithUniqueUsername($_POST['email'], $_POST['password'], $_POST['username'], function ($selector, $token) {
-            //     $message = Blade::run('Emails.verify_email', ['token' => $token, 'selector' => $selector, 'url' => BASEURL]);
+            //     $message = Blade::view('Emails.verify_email', ['token' => $token, 'selector' => $selector, 'url' => BASEURL]);
             //     $this->email_result = Mail::sendEmail('Account Verification', $message, [$_POST['email'], $_POST['username']]);
             // });
 
@@ -107,15 +107,15 @@ class AuthController {
         try {
             Auth::getInstance()->confirmEmail($selector, $token);
 
-            return Blade::run('Auth.verify', ['success' => true, 'message' => 'Email address has been verified']);
+            return Blade::view('Auth.verify', ['success' => true, 'message' => 'Email address has been verified']);
         } catch (\Delight\Auth\InvalidSelectorTokenPairException $e) {
-            return Blade::run('Auth.verify', ['success' => false, 'message' => 'Invalid token']);
+            return Blade::view('Auth.verify', ['success' => false, 'message' => 'Invalid token']);
         } catch (\Delight\Auth\TokenExpiredException $e) {
-            return Blade::run('Auth.verify', ['success' => false, 'message' => 'Token expired']);
+            return Blade::view('Auth.verify', ['success' => false, 'message' => 'Token expired']);
         } catch (\Delight\Auth\UserAlreadyExistsException $e) {
-            return Blade::run('Auth.verify', ['success' => false, 'message' => 'Email address already exists']);
+            return Blade::view('Auth.verify', ['success' => false, 'message' => 'Email address already exists']);
         } catch (\Delight\Auth\TooManyRequestsException $e) {
-            return Blade::run('Auth.verify', ['success' => false, 'message' => 'Too many requests']);
+            return Blade::view('Auth.verify', ['success' => false, 'message' => 'Too many requests']);
         }
     }
 
@@ -135,7 +135,7 @@ class AuthController {
         try {
             $auth = Auth::getInstance();
             $auth->resendConfirmationForEmail($_POST['email'], function ($selector, $token) {
-                $message = Blade::run('Emails.verify_email', ['token' => $token, 'selector' => $selector, 'url' => BASEURL]);
+                $message = Blade::view('Emails.verify_email', ['token' => $token, 'selector' => $selector, 'url' => BASEURL]);
                 $this->email_result = Mail::sendEmail('Account Verfication', $message, [$_POST['email'], $_POST['email']]);
             });
             return new  JSONResponse(['email_result' => $this->email_result, 'success' => true, 'message' => 'Activation email has been sent.'. $this->email_result]);
@@ -160,7 +160,7 @@ class AuthController {
         }
         try {
             Auth::getInstance()->forgotPassword($_POST['email'], function ($selector, $token) {
-                $message = Blade::run('Emails.recover_password', ['token' => $token, 'selector' => $selector, 'url' => BASEURL]);
+                $message = Blade::view('Emails.recover_password', ['token' => $token, 'selector' => $selector, 'url' => BASEURL]);
                 $this->email_result = Mail::sendEmail('Password Recovery', $message, [$_POST['email'], $_POST['email']]);
             });
             return new  JSONResponse(['email_result' => $this->email_result, 'success' => true, 'message' => 'Request to change password has been registered.' . $this->email_result]);
@@ -180,15 +180,15 @@ class AuthController {
         try {
             Auth::getInstance()->canResetPasswordOrThrow($selector, $token);
 
-            return Blade::run('_auth.forms_manual.reset', ['success' => true, 'message' => 'Verified! Please update the password', 'selector' => $selector, 'token' => $token]);
+            return Blade::view('_auth.forms_manual.reset', ['success' => true, 'message' => 'Verified! Please update the password', 'selector' => $selector, 'token' => $token]);
         } catch (\Delight\Auth\InvalidSelectorTokenPairException $e) {
-            return Blade::run('_auth.forms_manual.reset', ['success' => false, 'message' => 'Invalid token']);
+            return Blade::view('_auth.forms_manual.reset', ['success' => false, 'message' => 'Invalid token']);
         } catch (\Delight\Auth\TokenExpiredException $e) {
-            return Blade::run('_auth.forms_manual.reset', ['success' => false, 'message' => 'Token expired']);
+            return Blade::view('_auth.forms_manual.reset', ['success' => false, 'message' => 'Token expired']);
         } catch (\Delight\Auth\ResetDisabledException $e) {
-            return Blade::run('_auth.forms_manual.reset', ['success' => false, 'message' => 'Password reset is disabled']);
+            return Blade::view('_auth.forms_manual.reset', ['success' => false, 'message' => 'Password reset is disabled']);
         } catch (\Delight\Auth\TooManyRequestsException $e) {
-            return Blade::run('_auth.forms_manual.reset', ['success' => false, 'message' => 'Too many requests']);
+            return Blade::view('_auth.forms_manual.reset', ['success' => false, 'message' => 'Too many requests']);
         }
     }
 

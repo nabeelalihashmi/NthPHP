@@ -3,7 +3,7 @@
 // (by) Nabeel Ali (mail2nabeelali@gmail.com)
 
 
-function ajaxifyForm(formEl, successCallback, beforeCallBack = null, keepButtonDisabledOnSuccess = true) {
+function ajaxifyForm(formEl, successCallback, beforeCallBack = null, keepButtonDisabledOnSuccess = false) {
   formEl.addEventListener('submit', async (event) => {
     event.preventDefault();
 
@@ -149,3 +149,34 @@ async function ajaxifyAction(url, method, data, submitButton, successCallback, k
     });
   }
 }
+
+
+
+
+function ajaxify() {
+  const forms = document.querySelectorAll('form[data-ajaxify]');
+
+  forms.forEach((formEl) => {
+    const beforeCallbackName = formEl.getAttribute('data-before');
+    const successCallbackName = formEl.getAttribute('data-success');
+    const keepButtonDisabled = (formEl.getAttribute('data-keep-disabled') ?? 'false') === 'true';
+
+    const beforeCallback = beforeCallbackName 
+      ? (typeof window[beforeCallbackName] === 'function' 
+          ? window[beforeCallbackName] 
+          : eval(beforeCallbackName)) 
+      : null;
+
+    const successCallback = successCallbackName 
+      ? (typeof window[successCallbackName] === 'function' 
+          ? window[successCallbackName] 
+          : eval(successCallbackName)) 
+      : null;
+
+      console.log(successCallback)
+
+    ajaxifyForm(formEl, successCallback, beforeCallback, keepButtonDisabled);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', ajaxify);
