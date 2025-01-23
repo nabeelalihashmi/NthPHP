@@ -11,6 +11,8 @@ define('DIR', __DIR__);
 
 require __DIR__ . '/vendor/autoload.php';
 
+define('REDBEAN_MODEL_PREFIX', '\\App\\Models\\');
+
 Config::load('app/config.php');
 define('BASEURL', Config::get('app.base_url'));
 define('APPNAME', Config::get('app.app_name'));
@@ -28,8 +30,15 @@ $automaticRoutes            = Config::get('routing.automatic_routes');
 $dsn                        = Config::get('database.dsn');
 $username                   = Config::get('database.username');
 $password                   = Config::get('database.password');
+$freeze                     = Config::get('database.freeze');
+
 
 R::setup($dsn, $username, $password);
+
+
+if ($freeze) {
+    R::freeze(true);
+}
 
 if ($cacheEnabled && file_exists($routeCollectionCacheFile)) {
     $routes = include $routeCollectionCacheFile;

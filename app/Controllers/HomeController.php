@@ -7,6 +7,7 @@ use Framework\Attributes\Route;
 use Framework\Classes\Blade;
 use Framework\HTTP\Responses\JSONResponse;
 use Framework\HTTP\Responses\RedirectResponse;
+use RedBeanPHP\R;
 
 class HomeController {
 
@@ -43,6 +44,19 @@ class HomeController {
 
     public function methodNotAllowed() {
         return 'Not allowed!';
+    }
+
+    #[Route(['GET'], '/db')]
+    public function testDb() {
+        $todo = R::dispense('todos');
+        $todo->title = 'Learn NthPHP';
+        $todo->created_at = R::isoDateTime();
+        $id = R::store($todo);
+
+        var_dump($id);
+        $todo = R::load('todo', $id);
+        return json_encode($todo);
+
     }
 
     #[Route(['GET'], '/sse')]

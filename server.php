@@ -30,11 +30,16 @@ $automaticRoutes            = Config::get('routing.automatic_routes');
 $dsn                        = Config::get('database.dsn');
 $username                   = Config::get('database.username');
 $password                   = Config::get('database.password');
+$freeze                     = Config::get('database.freeze');
 $swooleStatic               = Config::get('server.swoole_static') ?? 'public';
 $swooleHost                 = Config::get('server.swoole_host') ?? '127.0.0.1';
 $swoolePort                 = Config::get('server.swoole_port') ?? 9501;
 
 R::setup($dsn, $username, $password);
+
+if ($freeze) {
+    R::freeze(true);
+}
 
 
 if ($cacheEnabled && file_exists($routeCollectionCacheFile)) {
