@@ -80,7 +80,7 @@ class AuthController {
             $auth = Auth::getInstance();
             // uncomment this for production
             // $userId = $auth->registerWithUniqueUsername($_POST['email'], $_POST['password'], $_POST['username'], function ($selector, $token) {
-            //     $message = Blade::view('Emails.verify_email', ['token' => $token, 'selector' => $selector, 'url' => BASEURL]);
+            //     $message = Blade::view('_auth.emails.verify_email', ['token' => $token, 'selector' => $selector, 'url' => BASEURL]);
             //     $this->email_result = Mail::sendEmail('Account Verification', $message, [$_POST['email'], $_POST['username']]);
             // });
 
@@ -135,7 +135,7 @@ class AuthController {
         try {
             $auth = Auth::getInstance();
             $auth->resendConfirmationForEmail($_POST['email'], function ($selector, $token) {
-                $message = Blade::view('Emails.verify_email', ['token' => $token, 'selector' => $selector, 'url' => BASEURL]);
+                $message = Blade::view('_auth.emails.verify_email', ['token' => $token, 'selector' => $selector, 'url' => BASEURL]);
                 $this->email_result = Mail::sendEmail('Account Verfication', $message, [$_POST['email'], $_POST['email']]);
             });
             return new  JSONResponse(['email_result' => $this->email_result, 'success' => true, 'message' => 'Activation email has been sent.'. $this->email_result]);
@@ -160,7 +160,7 @@ class AuthController {
         }
         try {
             Auth::getInstance()->forgotPassword($_POST['email'], function ($selector, $token) {
-                $message = Blade::view('Emails.recover_password', ['token' => $token, 'selector' => $selector, 'url' => BASEURL]);
+                $message = Blade::view('_auth.emails.recover_password', ['token' => $token, 'selector' => $selector, 'url' => BASEURL]);
                 $this->email_result = Mail::sendEmail('Password Recovery', $message, [$_POST['email'], $_POST['email']]);
             });
             return new  JSONResponse(['email_result' => $this->email_result, 'success' => true, 'message' => 'Request to change password has been registered.' . $this->email_result]);
