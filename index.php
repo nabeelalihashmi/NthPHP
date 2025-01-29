@@ -154,3 +154,7 @@ function getCurrentUrl(array $params = []) {
  function cfg($key) {
     return Config::get($key);
  }
+
+ function baseurl($url) {
+    return BASEURL . '/' . $url;
+ }
