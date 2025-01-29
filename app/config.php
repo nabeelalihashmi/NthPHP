@@ -1,5 +1,7 @@
 <?php
 
+use Framework\Classes\Blade;
+
 return [
 
     'app' => [
@@ -20,7 +22,7 @@ return [
 
     'blade' => [
         'pipes' => true,
-        'mode'  => 0,
+        'mode'  => Blade::MODE_DEBUG,
         'comment_mode' => 0
     ],
 

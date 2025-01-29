@@ -7,7 +7,7 @@ Create a new {{APPNAME}} account
 
 @section('content')
 <form id="register" action="{{BASEURL}}/register" method="POST">
-    <?= Framework\Classes\Blade::inputToken(); ?>
+    @csrf
 
 
     <div class="form-floating mb-1">

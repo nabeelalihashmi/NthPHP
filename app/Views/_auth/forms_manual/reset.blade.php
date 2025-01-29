@@ -15,7 +15,7 @@
 @else
 
 <form id="reset" action="{{BASEURL}}/reset" method="POST">
-    <?= Framework\Classes\Blade::inputToken(); ?>
+    @csrf
 
     <input type="hidden" name="selector" value="{{ $selector }}">
     <input type="hidden" name="token" value="{{ $token }}">

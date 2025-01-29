@@ -6,9 +6,8 @@ Login Into Your {{APPNAME}} account.
 @endsection
 
 @section('content')
-<form id="loginForm" action="{{BASEURL}}/login" method="POST">
-    <?=   Framework\Classes\Blade::inputToken(); ?>
-    
+<form id="loginForm" action="@b('login')" method="POST">
+    @csrf
     <div class="form-floating mb-1">
         <input required class="form-control" id="email" type="email" name="email" placeholder="Email" />
         <label for="email"> Email </label>

@@ -10,7 +10,7 @@ Request to resend activation email for your {{APPNAME}} account.
 @section('content')
 
 <form id="reconfirm" action="{{BASEURL}}/reconfirm" method="POST">
-    <?= Framework\Classes\Blade::inputToken(); ?>
+    @csrf
     <div class="input-group mb-1">
         <div class="form-floating">
             <input required class="form-control" id="email" type="email" name="email" placeholder="email" />

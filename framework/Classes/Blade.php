@@ -21,6 +21,21 @@ class Blade extends BladeOne {
 
         $this->parseDown = new Parsedown();
 
+        $this->directive('csrf', function ($expression) {
+            if (empty($expression)) {
+                return "<?php echo '<input type=\"hidden\" name=\"_token\" value=\"' . Framework\Classes\Blade::getInstance()->getCsrfToken(true, '_token') . '\">'; ?>";
+            }
+
+            $args = explode(',', str_replace(['(', ')', "'"], '', $expression));
+            $tokenName = trim($args[0] ?? '_token');
+            $fullToken = isset($args[1]) ? trim($args[1]) === 'true' : true;
+
+            return "<?php echo '<input type=\"hidden\" name=\"$tokenName\" value=\"' . Framework\Classes\Blade::getInstance()->getCsrfToken($fullToken, '$tokenName') . '\">'; ?>";
+        });
+
+        $this->directive('b', function ($expression) {
+            return "<?php echo BASEURL . '/' . $expression; ?>";
+        });
     }
 
     public static function getInstance($templatePath = null, $compiledPath = null, $mode = 0, $commentMode = 0): BladeOne {
@@ -42,13 +57,13 @@ class Blade extends BladeOne {
         $args = $this->getArgs($expression);
         $filename = $args['file'];
         $filePath = DIR . '/' . ltrim($filename, '/');
-        
+
         if (file_exists($filePath)) {
             $markdownContent = file_get_contents($filePath);
             $html = $this->parseDown->text($markdownContent);
             return "<?php echo '$html'; ?>";
         } else {
-            return "<?php echo 'Markdown file not found!'; ?>"; 
+            return "<?php echo 'Markdown file not found!'; ?>";
         }
     }
 }

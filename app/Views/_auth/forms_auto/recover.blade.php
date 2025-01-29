@@ -8,7 +8,7 @@ Recover or Change Password for your {{APPNAME}} account
 @section('content')
 
 <form id="recover" action="{{BASEURL}}/recover" method="POST">
-    <?= Framework\Classes\Blade::inputToken(); ?>
+    @csrf
     <div class="form-floating mb-1">
         <input class="form-control" id="email" required type="email" name="email" placeholder="Email" />
         <label for="email"> Email </label>
