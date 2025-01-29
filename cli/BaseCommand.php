@@ -19,6 +19,5 @@ abstract class BaseCommand {
         return $this->description;
     }
 
-    // Abstract method that must be implemented by commands
     abstract public function execute(array $options): void;
 }

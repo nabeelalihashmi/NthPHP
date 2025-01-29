@@ -19,8 +19,8 @@ class Blade extends BladeOne {
             $this->pipeEnable = true;
         }
 
-        // Initialize Parsedown for Markdown parsing
         $this->parseDown = new Parsedown();
+
     }
 
     public static function getInstance($templatePath = null, $compiledPath = null, $mode = 0, $commentMode = 0): BladeOne {

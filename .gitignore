@@ -1,5 +1,6 @@
 .directory
 vendor/
-cache/**/*
+cache/compiled/**/*
+cache/routes/**/*
 logs/**/*
 public/uploads/
