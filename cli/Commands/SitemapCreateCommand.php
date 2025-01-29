@@ -30,7 +30,7 @@ class SitemapCreateCommand extends BaseCommand {
         foreach ($routes as $route) {
             $handler = $route['handler'];
 
-            // if ($this->hasNoSitemapAttribute($handler)) {
+            if ($this->hasNoSitemapAttribute($handler)) {
                 continue;
             }
 
