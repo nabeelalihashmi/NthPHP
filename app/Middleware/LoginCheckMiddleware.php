@@ -19,7 +19,6 @@ class LoginCheckMiddleware {
             if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
                 return new JSONResponse(['success' => false, 'error' => 'AUTH', 'message' => 'user not logged in']);
             }
-            // return new RedirectResponse(BASEURL  . '/login?next=' . getCurrentUrl());
             return new RedirectResponse(BASEURL  . '/login');
         }
 

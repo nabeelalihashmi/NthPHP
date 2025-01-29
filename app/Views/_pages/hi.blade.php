@@ -13,7 +13,7 @@
         <strong>Whoops!</strong> Something went wrong!
     @endcomponent
 
-    @markdownFile(file=store/hello.md)
+    @markdownFile(file=app/Store/hello.md)
 
     <?php
 

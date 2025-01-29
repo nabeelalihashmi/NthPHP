@@ -11,7 +11,7 @@ class Validator {
         self::$_instance = new  ValidationValidator();
     }
 
-    public static function instance()
+    public static function getInstance()
     {
         if (self::$_instance == null) {
             new self();

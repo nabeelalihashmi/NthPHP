@@ -11,7 +11,7 @@ class HashId {
     {
       self::$_instance = new Hashids(Config::get('app_key'), 16);
     }
-    public static function instance() {
+    public static function getInstance() {
 
         if (self::$_instance == null) {
             new self();

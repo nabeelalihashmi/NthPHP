@@ -22,7 +22,7 @@ class AuthController {
 
     #[Route(['POST'], '/login')]
     public function postLogin() {
-        $val = Validator::instance()->validate($_POST, [
+        $val = Validator::getInstance()->validate($_POST, [
             'email' => 'required|email',
             'password' => 'required|min:5|max:255'
         ]);
@@ -63,7 +63,7 @@ class AuthController {
 
     #[Route(['POST'], '/register')]
     public function postRegister() {
-        $val = Validator::instance()->validate($_POST, [
+        $val = Validator::getInstance()->validate($_POST, [
             'username' => 'required|min:4|max:24|alpha_num',
             'email' => 'required|email',
             'password' => 'required|min:5|max:255',
@@ -122,7 +122,7 @@ class AuthController {
 
     #[Route(['POST'], '/reconfirm')]
     function postReconfirm() {
-        $val = Validator::instance()->validate($_POST, [
+        $val = Validator::getInstance()->validate($_POST, [
             'email' => 'required|email'
         ]);
 
@@ -149,7 +149,7 @@ class AuthController {
 
     #[Route(['POST'], '/recover')]
     function postRecover() {
-        $val = Validator::instance()->validate($_POST, [
+        $val = Validator::getInstance()->validate($_POST, [
             'email' => 'required|email'
         ]);
 
@@ -194,7 +194,7 @@ class AuthController {
 
     #[Route(['POST'], '/reset')]
     function postReset() {
-        $val = Validator::instance()->validate($_POST, [
+        $val = Validator::getInstance()->validate($_POST, [
             'selector' => 'required',
             'token' => 'required',
             'password' => 'required|min:5|max:255',
