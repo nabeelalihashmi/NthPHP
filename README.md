@@ -44,6 +44,19 @@ In routing, if `automatic_routes` have value other than `false`, e.g,
 ```
 then blade view files in  `/app/Views/_pages` and `_other_dir_in_views`, are considered as routes.
 
+## Manual Routes
+
+It is possible to define own routes in `app/Routes` directory. A php file here, must return an array of route arrays. A route array has following keys:
+
+-**method**  
+-**path**  
+-**handler**  
+-**middleware**  
+
+Check demo files for example.
+
+If file name is root.php, then routes of that and mounted with group. For other name, such as `demos.php`, any route define in it will automatically prepend `demos` in routes. 
+
 ## Documentation
 
 - **Blade**: [Laravel Blade Documentation](https://laravel.com/docs/8.x/blade)

@@ -19,6 +19,10 @@ class Blade extends BladeOne {
             $this->pipeEnable = true;
         }
 
+        if (Config::get('blade.optimize')) {
+            $this->optimize = true;
+        }
+
         $this->parseDown = new Parsedown();
 
         $this->directive('csrf', function ($expression) {
@@ -43,10 +47,6 @@ class Blade extends BladeOne {
             self::$_instance = new self();
         }
         return self::$_instance;
-    }
-
-    public static function inputToken($fullToken = true, $tokenId = '_token') {
-        return "<input type='hidden' name='{$tokenId}' value='" . self::getInstance()->getCsrfToken($fullToken, $tokenId) . "'>";
     }
 
     public static function view($view, $vars = []) {

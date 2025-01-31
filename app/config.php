@@ -7,8 +7,9 @@ return [
     'app' => [
         'active_controllers' => 'auto',
         'app_key' => 'your_key',
-        'base_url' => 'http://localhost/NthPHP',
+        'base_url' => (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost'),
         'app_name' => 'NthPHP',
+        'debugger' => true
     ],
 
     'routing' => [
@@ -17,13 +18,18 @@ return [
         'routes_cache_enabled' => false,
         'routes_cache_file' => DIR . '/cache/routes/routes.php',
         'routes_collection_cache_file' => DIR . '/cache/routes/collector.php',
-        'automatic_routes' => ['_pages', '_auth/forms_auto'],
+        'automatic_routes' => ['_pages', '_auth/forms_auto', '_demos'],
     ],
 
     'blade' => [
         'pipes' => true,
-        'mode'  => Blade::MODE_DEBUG,
-        'comment_mode' => 0
+        'mode'  => Blade::MODE_SLOW,
+        'comment_mode' => 0,
+        'optimize' =>  true,
+    ],
+
+    'auth' => [
+        'verify' => false
     ],
 
 

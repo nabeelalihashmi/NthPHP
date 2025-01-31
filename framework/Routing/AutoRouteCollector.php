@@ -44,7 +44,24 @@ class AutoRouteCollector {
             }
         }
 
-        // Merge manually added routes
+        // Collect routes from /app/Routes/ directory
+        $routesDir = DIR . '/app/Routes/';
+        if (is_dir($routesDir)) {
+            foreach (glob($routesDir . '*.php') as $routeFile) {
+                $filename = pathinfo($routeFile, PATHINFO_FILENAME);
+                $fileRoutes = require $routeFile;
+
+                if (is_array($fileRoutes)) {
+                    foreach ($fileRoutes as &$route) {
+                        if ($filename !== 'root') {
+                            $route['path'] = '/' . $filename . $route['path'];
+                        }
+                    }
+                    $routes = array_merge($routes, $fileRoutes);
+                }
+            }
+        }
+
         return array_merge($routes, self::$manualRoutes);
     }
 
@@ -99,6 +116,10 @@ class AutoRouteCollector {
         $files = $this->getBladeFiles($viewsDirectory);
 
         foreach ($files as $file) {
+            if (strpos(basename($file), '__') === 0) {
+                continue;
+            }
+
             $relativePath = str_replace([$viewsDirectory . '/', '.blade.php'], '', $file);
 
             $routePath = '/' . strtolower(str_replace(['\\', '/'], '/', $relativePath));

@@ -1,4 +1,4 @@
-@extends('Layouts.Auth')
+@extends('_auth.AuthLayout')
 @section('page_title', 'Update Password')
 @section('heading', 'Update Password')
 @section('description')

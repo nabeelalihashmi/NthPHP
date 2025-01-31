@@ -15,9 +15,14 @@ define('DIR', __DIR__);
 
 require __DIR__ . '/vendor/autoload.php';
 
+define('REDBEAN_MODEL_PREFIX', '\\App\\Models\\');
+
+
 $publicDir = DIR . '/public';
 
 Config::load('app/config.php');
+define('BASEURL', Config::get('app.base_url'));
+define('APPNAME', Config::get('app.app_name'));
 
 
 $active_controllers         = Config::get('app.active_controllers');
@@ -41,20 +46,20 @@ if ($freeze) {
     R::freeze(true);
 }
 
+include DIR . '/app/boot.php';
 
-if ($cacheEnabled && file_exists($routeCollectionCacheFile)) {
-    $routes = unserialize(file_get_contents($routeCollectionCacheFile));
-} else {
+$dispatcher = FastRoute\cachedDispatcher(function (RouteCollector $r) use ($cacheEnabled, $routeCollectionCacheFile, $active_controllers, $automaticRoutes) {
+    if ($cacheEnabled && file_exists($routeCollectionCacheFile)) {
+        $routes = include $routeCollectionCacheFile;
+    } else {
+        $routeCollector = new AutoRouteCollector();
+        $routes = $routeCollector->collectRoutes($active_controllers, $automaticRoutes);
 
-    $routeCollector = new AutoRouteCollector();
-    $routes = $routeCollector->collectRoutes($active_controllers, $automaticRoutes);
-
-    if ($cacheEnabled) {
-        file_put_contents($routeCollectionCacheFile, serialize($routes));
+        if ($cacheEnabled) {
+            $exportedRoutes = "<?php\n\nreturn " . var_export($routes, true) . ";\n";
+            file_put_contents($routeCollectionCacheFile, $exportedRoutes);
+        }
     }
-}
-
-$dispatcher = FastRoute\cachedDispatcher(function (RouteCollector $r) use ($routes) {
     foreach ($routes as $route) {
         $r->addRoute($route['method'], $route['path'], [...$route['handler'], $route['middleware'] ?? []]);
     }
@@ -64,6 +69,9 @@ $dispatcher = FastRoute\cachedDispatcher(function (RouteCollector $r) use ($rout
 ]);
 
 $server = new Server($swooleHost, $swoolePort);
+$server->on("Start", function (Server $server) {
+    echo "Swoole http server is started at http://{$server->host}:{$server->port}\n";
+});
 
 $server->on("request", function (Request $req, SwooleResponse $res) use ($dispatcher, $notFoundHandler, $methodNotAllowedHandler, $swooleStatic) {
     $httpMethod = $req->server['request_method'];
@@ -137,4 +145,13 @@ function handleResponse($response, SwooleResponse $swooleResponse) {
             $response->send($swooleResponse);
         }
     }
+}
+
+
+function cfg($key) {
+    return Config::get($key);
+}
+
+function baseurl($url) {
+    return BASEURL . '/' . $url;
 }

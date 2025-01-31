@@ -1,5 +1,11 @@
 @extends('Layouts.Main')
 
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{BASEURL}}/public/nthajax.js"></script>
+<script src="{{BASEURL}}/public/refid.js"></script>
+@endpush
+
 @section('content')
 <div class="min-vh-100">
     <form action="{{BASEURL}}/ajax" method="POST" data-ajaxify data-before="validate">
@@ -7,10 +13,6 @@
         <button type="submit" name="submit">Submit</button>
     </form>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="{{BASEURL}}/public/nthajax.js"></script>
-<script src="{{BASEURL}}/public/refid.js"></script>
 
 <script>
     function validate() {

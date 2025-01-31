@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'NthPHP App')</title>
     <!-- Bootstrap CSS -->
-    <link href="{{BASEURL}}/public/assets/bootstrap.min.css" rel="stylesheet">
+    <link href="@b('/public/assets/bootstrap.min.css')" rel="stylesheet">
     @stack('styles')
+    @canonical
 </head>
 <body>
     <!-- Navbar -->
@@ -44,7 +45,7 @@
     </footer>
 
     <!-- Bootstrap JS -->
-    <script src="{{BASEURL}}/public/assets/bootstrap.bundle.min.js"></script>
+    <script src="@b('public/assets/bootstrap.bundle.min.js')"></script>
     @stack('scripts')
 </body>
 </html>

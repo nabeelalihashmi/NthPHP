@@ -1,4 +1,4 @@
-@extends('Layouts.Auth')
+@extends('_auth.AuthLayout')
 @section('page_title', 'Register')
 @section('heading', 'Register')
 @section('description')
@@ -6,10 +6,11 @@ Create a new {{APPNAME}} account
 @endsection
 
 @section('content')
-<form id="register" action="{{BASEURL}}/register" method="POST">
+<form id="register" action="{{BASEURL}}/register" method="POST"
+    data-ajaxify
+    data-before="preValidate"
+    data-success="onSuccess">
     @csrf
-
-
     <div class="form-floating mb-1">
         <input class="form-control" id="email" required type="email" name="email" placeholder="Email" />
         <label for="email"> Email </label>
@@ -45,23 +46,20 @@ Create a new {{APPNAME}} account
 </form>
 
 <script>
-    let p1 = document.querySelector('#password');
-    let p2 = document.querySelector('#confirm_password');
-    ajaxifyForm(document.querySelector('#register'),
-        function() {
-            window.location.href = '{{BASEURL}}/login'
-        },
-        function() {
-            if (p1.value !== p2.value) {
-                Swal.fire({
+    function preValidate() {
+        if (password.value !== confirm_password.value) {
+            Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
                 html: 'Passwords do not match!.',
-                })
-                return false;
-            }
+            })
+            return false;
         }
-    );
+    }
+
+    function onSuccess(form, json) {
+        window.location.href = '{{BASEURL}}/login'
+    }
 </script>
 
 @endsection

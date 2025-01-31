@@ -17,8 +17,11 @@ Config::load('app/config.php');
 define('BASEURL', Config::get('app.base_url'));
 define('APPNAME', Config::get('app.app_name'));
 
-Debugger::enable();
-
+if (Config::get('app.debugger')) {
+    Debugger::enable('Development', DIR . '/logs');
+    Debugger::$strictMode = true;
+    Debugger::$showLocation = true;
+}
 
 $active_controllers         = Config::get('app.active_controllers');
 $notFoundHandler            = Config::get('routing.not_found');
@@ -40,19 +43,19 @@ if ($freeze) {
     R::freeze(true);
 }
 
-if ($cacheEnabled && file_exists($routeCollectionCacheFile)) {
-    $routes = include $routeCollectionCacheFile;
-} else {
-    $routeCollector = new AutoRouteCollector();
-    $routes = $routeCollector->collectRoutes($active_controllers, $automaticRoutes);
 
-    if ($cacheEnabled) {
-        $exportedRoutes = "<?php\n\nreturn " . var_export($routes, true) . ";\n";
-        file_put_contents($routeCollectionCacheFile, $exportedRoutes);
+$dispatcher = FastRoute\cachedDispatcher(function (RouteCollector $r) use ($cacheEnabled, $routeCollectionCacheFile, $active_controllers, $automaticRoutes) {
+    if ($cacheEnabled && file_exists($routeCollectionCacheFile)) {
+        $routes = include $routeCollectionCacheFile;
+    } else {
+        $routeCollector = new AutoRouteCollector();
+        $routes = $routeCollector->collectRoutes($active_controllers, $automaticRoutes);
+
+        if ($cacheEnabled) {
+            $exportedRoutes = "<?php\n\nreturn " . var_export($routes, true) . ";\n";
+            file_put_contents($routeCollectionCacheFile, $exportedRoutes);
+        }
     }
-}
-
-$dispatcher = FastRoute\cachedDispatcher(function (RouteCollector $r) use ($routes) {
     foreach ($routes as $route) {
         $r->addRoute($route['method'], $route['path'], [...$route['handler'], $route['middleware'] ?? []]);
     }
@@ -64,6 +67,7 @@ $dispatcher = FastRoute\cachedDispatcher(function (RouteCollector $r) use ($rout
 $httpMethod = $_SERVER['REQUEST_METHOD'];
 $uri = makeRequestUri();
 
+include DIR . '/app/boot.php';
 
 $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
 
@@ -144,17 +148,17 @@ function getCurrentUrl(array $params = []) {
     if (isset($_SERVER['QUERY_STRING'])) {
         parse_str($_SERVER['QUERY_STRING'], $query);
     }
- 
+
     $query = array_merge($query, $params);
     $url .= '?' . http_build_query($query);
- 
+
     return $url;
- }
+}
 
- function cfg($key) {
+function cfg($key) {
     return Config::get($key);
- }
+}
 
- function baseurl($url) {
+function baseurl($url) {
     return BASEURL . '/' . $url;
- }
+}

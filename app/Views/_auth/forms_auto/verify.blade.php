@@ -1,4 +1,4 @@
-@extends('Layouts.Auth')
+@extends('_auth.AuthLayout')
 
 @section('page_title', 'Verification')
 @section('content')

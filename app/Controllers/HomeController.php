@@ -28,6 +28,12 @@ class HomeController {
         return new JSONResponse(['message' => 'Hello, World!']);
     }
 
+    #[Route(['GET'], '/json/{id}')]
+    public function jsonId($id) {
+        return new JSONResponse(['message' => 'Hello,'. $id]);
+    }
+
+
     #[Route(['GET'], '/redirect')]
     public function redirect() {
         return new RedirectResponse('https://aliveforms.com');
@@ -93,5 +99,9 @@ class HomeController {
     #[Route(['POST'], '/ajax')]
     public function postAjax() {
         return new JSONResponse(['success' => true, 'message' => 'Hello, ' . $_POST['first_name']]);
+    }
+
+    public function fileRoute() {
+        return new JSONResponse(['success' => true]);
     }
 }

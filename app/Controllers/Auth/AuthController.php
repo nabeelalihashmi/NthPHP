@@ -6,6 +6,7 @@ use Delight\Auth\Role;
 use Framework\Attributes\Route;
 use Framework\Classes\Auth;
 use Framework\Classes\Blade;
+use Framework\Classes\Config;
 use Framework\Classes\Mail;
 use Framework\Classes\Validator;
 use Framework\HTTP\Responses\JSONResponse;
@@ -78,14 +79,16 @@ class AuthController {
         
         try {
             $auth = Auth::getInstance();
-            // uncomment this for production
-            // $userId = $auth->registerWithUniqueUsername($_POST['email'], $_POST['password'], $_POST['username'], function ($selector, $token) {
-            //     $message = Blade::view('_auth.emails.verify_email', ['token' => $token, 'selector' => $selector, 'url' => BASEURL]);
-            //     $this->email_result = Mail::sendEmail('Account Verification', $message, [$_POST['email'], $_POST['username']]);
-            // });
 
-            // comment this for production 
-            $userId = $auth->registerWithUniqueUsername($_POST['email'], $_POST['password'], $_POST['username'], null);
+            if (Config::get('auth.verify')) {
+                $userId = $auth->registerWithUniqueUsername($_POST['email'], $_POST['password'], $_POST['username'], function ($selector, $token) {
+                    $message = Blade::view('_auth.emails.verify_email', ['token' => $token, 'selector' => $selector, 'url' => BASEURL]);
+                    $this->email_result = Mail::sendEmail('Account Verification', $message, [$_POST['email'], $_POST['username']]);
+                });
+            } else {
+                $userId = $auth->registerWithUniqueUsername($_POST['email'], $_POST['password'], $_POST['username'], null);
+            }
+            
             $auth->admin()->addRoleForUserById($userId, Role::CONSUMER);
 
             return new  JSONResponse(['email_result' => $this->email_result, 'success' => true, 'message' => 'User Has Been Registered.' . $this->email_result]);
