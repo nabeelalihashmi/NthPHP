@@ -1,6 +1,8 @@
 {
     "name": "nabeelalihashmi/nthphp",
-    "description": "A fast, optimized PHP framework using PHP attributes, automatic routing of Blade views, and RedBeanPHP.",
+    "description": "A fast, optimized PHP framework to make own framework with PHP attributes, automatic routing of Blade views.",
+    "keywords": ["php", "framework", "mvc", "routing", "blade", "fast", "optimized"],
+    "license": "MIT",
     "type": "project",
     "require": {
         "nikic/fast-route": "^1.3",
@@ -35,7 +37,9 @@
     "authors": [
         {
             "name": "Nabeel Ali",
-            "email": "mail2nabeelali@gmail.com"
+            "email": "mail2nabeelali@gmail.com",
+            "role": "Developer",
+            "homepage": "https://quizrella.com"
         }
     ]
 }
