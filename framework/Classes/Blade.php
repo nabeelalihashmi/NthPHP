@@ -61,7 +61,7 @@ class Blade extends BladeOne {
         if (file_exists($filePath)) {
             $markdownContent = file_get_contents($filePath);
             $html = $this->parseDown->text($markdownContent);
-            return "<?php echo '$html'; ?>";
+            return $html;
         } else {
             return "<?php echo 'Markdown file not found!'; ?>";
         }
