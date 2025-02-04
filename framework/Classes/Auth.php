@@ -11,7 +11,11 @@ class Auth {
     
     public static function getInstance() {
         if (!isset(self::$instance)) {
-            $db = PdoDatabase::fromDsn(new PdoDsn(cfg('database.dsn'), cfg('database.username'), cfg('database.password')));
+            
+            $host = cfg('database.host');
+            $name = cfg('database.name');
+            $dsn = "mysql:host={$host};dbname={$name}";
+            $db = PdoDatabase::fromDsn(new PdoDsn($dsn, cfg('database.username'), cfg('database.password')));
             self::$instance = new DelightAuth($db, null, null, false);
         }
         return self::$instance;

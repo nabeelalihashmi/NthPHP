@@ -34,9 +34,10 @@ return [
 
 
     'database' => [
-        'dsn' => 'mysql:host=localhost;dbname=test',
-        'username' => 'root',
-        'password' => '',
+        'host' => $db_host,
+        'name' => $db_name,
+        'username' => $db_username,
+        'password' => $db_password,
         'freeze' => false
     ],
 

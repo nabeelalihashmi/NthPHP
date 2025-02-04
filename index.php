@@ -30,12 +30,13 @@ $cacheEnabled               = Config::get('routing.routes_cache_enabled');
 $routeCacheFile             = Config::get('routing.routes_cache_file');
 $routeCollectionCacheFile   = Config::get('routing.routes_collection_cache_file');
 $automaticRoutes            = Config::get('routing.automatic_routes');
-$dsn                        = Config::get('database.dsn');
+$host                       = Config::get('database.host');
+$name                       = Config::get('database.name');
 $username                   = Config::get('database.username');
 $password                   = Config::get('database.password');
 $freeze                     = Config::get('database.freeze');
 
-
+$dsn = "mysql:host={$host};dbname={$name}";
 R::setup($dsn, $username, $password);
 
 
