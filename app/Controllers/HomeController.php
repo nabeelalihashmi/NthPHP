@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Middleware\LoginCheckMiddleware;
 use Framework\Attributes\Route;
 use Framework\Classes\Blade;
+use Framework\Classes\Defer;
 use Framework\HTTP\Responses\JSONResponse;
 use Framework\HTTP\Responses\RedirectResponse;
 use RedBeanPHP\R;
@@ -14,11 +15,15 @@ class HomeController {
 
     #[Route(['GET'], '/hello/{str}')]
     public function hello($str) {
+        Defer::defer(function() use ($str) {
+            var_dump($str);
+        });
+
         return 'Hello ' . $str;
     }
     
 
-    #[Route(['GET'], '/', [LoginCheckMiddleware::class])]
+    #[Route(['GET'], '/')]
     public function index() {
         return Blade::view('home');
     }
@@ -31,6 +36,11 @@ class HomeController {
     #[Route(['GET'], '/json/{id}')]
     public function jsonId($id) {
         return new JSONResponse(['message' => 'Hello,'. $id]);
+    }
+
+    #[Route(['GET'], '/user/{username}')]
+    public function getUser($username) {
+        return new JSONResponse($username);
     }
 
 
@@ -103,5 +113,14 @@ class HomeController {
 
     public function fileRoute() {
         return new JSONResponse(['success' => true]);
+    }
+
+    #[Route(['GET'], '/defer' )]
+    public function defer() {
+        Defer::defer(function() {
+            sleep(4);
+            echo 'Something here!';
+        });
+        return "Done!";
     }
 }

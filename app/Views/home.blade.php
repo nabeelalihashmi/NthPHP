@@ -4,13 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NthPHP Framework</title>
-    <!-- Bootstrap 5 CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+        }
+     
+    </style>
 </head>
 <body class="d-flex justify-content-center align-items-center vh-100 bg-light">
 
     <div class="container text-center">
-        <h1 class="display-1 mb-4">Nth<strong>PHP</strong></h1>
+        <h1 class="display-1 mb-4 fw-bold">NthPHP</h1>
         
         <p class="lead mb-4">A fast, optimized PHP framework with automated routing using PHP attributes, and Blade views.</p>
     

@@ -23,13 +23,11 @@ if (Config::get('app.debugger')) {
     Debugger::$showLocation = true;
 }
 
-$active_controllers         = Config::get('app.active_controllers');
 $notFoundHandler            = Config::get('routing.not_found');
 $methodNotAllowedHandler    = Config::get('routing.method_not_allowed');
 $cacheEnabled               = Config::get('routing.routes_cache_enabled');
 $routeCacheFile             = Config::get('routing.routes_cache_file');
 $routeCollectionCacheFile   = Config::get('routing.routes_collection_cache_file');
-$automaticRoutes            = Config::get('routing.automatic_routes');
 $host                       = Config::get('database.host');
 $name                       = Config::get('database.name');
 $username                   = Config::get('database.username');
@@ -44,13 +42,12 @@ if ($freeze) {
     R::freeze(true);
 }
 
-
-$dispatcher = FastRoute\cachedDispatcher(function (RouteCollector $r) use ($cacheEnabled, $routeCollectionCacheFile, $active_controllers, $automaticRoutes) {
+$dispatcher = FastRoute\cachedDispatcher(function (RouteCollector $r) use ($cacheEnabled, $routeCollectionCacheFile) {
     if ($cacheEnabled && file_exists($routeCollectionCacheFile)) {
         $routes = include $routeCollectionCacheFile;
     } else {
         $routeCollector = new AutoRouteCollector();
-        $routes = $routeCollector->collectRoutes($active_controllers, $automaticRoutes);
+        $routes = $routeCollector->collectRoutes();
 
         if ($cacheEnabled) {
             $exportedRoutes = "<?php\n\nreturn " . var_export($routes, true) . ";\n";
@@ -74,6 +71,17 @@ $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
 
 switch ($routeInfo[0]) {
     case FastRoute\Dispatcher::NOT_FOUND:
+        $handler = $notFoundHandler;
+        if (is_string($handler) && strpos($handler, '@render') === 0) {
+            $handler = function () use ($handler) {
+                return \Framework\Classes\Blade::view(str_replace('@render:', '', $handler));
+            };
+        }
+        if (is_callable($handler)) {
+            handleResponse(($handler)());
+            return;
+        }
+
         [$controller, $method] = $notFoundHandler;
         $controllerInstance = new $controller();
         handleResponse(call_user_func([$controllerInstance, $method]));
@@ -161,5 +169,11 @@ function cfg($key) {
 }
 
 function baseurl($url) {
-    return BASEURL . '/' . $url;
+    $base = BASEURL;
+    if (substr($base, -1) !== '/' && substr($url, 0, 1) !== '/') {
+        $separator = '/';
+    } else {
+        $separator = '';
+    }
+    return $base . $separator . $url;
 }

@@ -10,7 +10,9 @@ use Framework\Classes\Config;
 class AutoRouteCollector {
     private static array $manualRoutes = [];
 
-    public function collectRoutes($controllers) {
+    public function collectRoutes() {
+        $controllers = Config::get('app.active_controllers');
+
         $routes = [];
 
         if ($controllers === 'auto') {

@@ -8,7 +8,7 @@
 
 @section('content')
 <div class="min-vh-100">
-    <form action="{{BASEURL}}/ajax" method="POST" data-ajaxify data-before="validate">
+    <form action="@baseurl(/ajax)" method="POST" data-ajaxify data-before="validate">
         <input type="text" name="first_name" id="first_name">
         <button type="submit" name="submit">Submit</button>
     </form>

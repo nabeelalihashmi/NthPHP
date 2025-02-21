@@ -26,11 +26,11 @@
     <nav>
         <h1>
             @base('http://localhost:9000')
-            <a href="@b('htmx/')" hx-target="#content">NthPHP + HTMX</a>
+            <a href="@baseurl('htmx/')" hx-target="#content">NthPHP + HTMX</a>
         </h1>
         <ul>
-            <li><a href="@b('htmx/')" hx-target="#content">Home</a></li>
-            <li><a href="@b('htmx/about')" hx-target="#content">About</a></li>
+            <li><a href="@baseurl('htmx/')" hx-target="#content">Home</a></li>
+            <li><a href="@baseurl('htmx/about')" hx-target="#content">About</a></li>
         </ul>
 
         <div>

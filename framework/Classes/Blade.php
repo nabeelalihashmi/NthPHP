@@ -37,8 +37,10 @@ class Blade extends BladeOne {
             return "<?php echo '<input type=\"hidden\" name=\"$tokenName\" value=\"' . Framework\Classes\Blade::getInstance()->getCsrfToken($fullToken, '$tokenName') . '\">'; ?>";
         });
 
-        $this->directive('b', function ($expression) {
-            return "<?php echo BASEURL . '/' . $expression; ?>";
+        $this->directive('baseurl', function ($expression) {
+            $expression = trim($expression, "'\"");
+            $baseUrl = baseurl($expression);
+            return $baseUrl;
         });
     }
 

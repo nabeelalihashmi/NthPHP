@@ -13,8 +13,8 @@ return [
     ],
 
     'routing' => [
-        'not_found' => [App\Controllers\HomeController::class, 'notFound'],
-        'method_not_allowed' => [App\Controllers\HomeController::class, 'methodNotAllowed'],
+        'not_found' => '@render:notfound' ,//[App\Controllers\HomeController::class, 'notFound'],
+        'method_not_allowed' => '@render:notfound', //[App\Controllers\HomeController::class, 'methodNotAllowed'],
         'routes_cache_enabled' => false,
         'routes_cache_file' => DIR . '/cache/routes/routes.php',
         'routes_collection_cache_file' => DIR . '/cache/routes/collector.php',
@@ -34,10 +34,10 @@ return [
 
 
     'database' => [
-        'host' => $db_host,
-        'name' => $db_name,
-        'username' => $db_username,
-        'password' => $db_password,
+        'host' => 'localhost:3306',
+        'name' => 'nthphp',
+        'username' => 'root',
+        'password' => '',
         'freeze' => false
     ],
 

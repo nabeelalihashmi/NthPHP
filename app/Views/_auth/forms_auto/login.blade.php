@@ -6,9 +6,9 @@ Login Into Your {{APPNAME}} account.
 @endsection
 
 @section('content')
-<form id="loginForm" action="@b('login')" method="POST" data-ajaxify data-success="onSuccess">
+<form id="loginForm" action="@baseurl(login)" method="POST" data-ajaxify data-success="onSuccess">
     @csrf
-    <input type="hidden" name="next" value="@b(($_GET['next'] ?? ''))">
+    <input type="hidden" name="next" value="@baseurl(($_GET['next'] ?? ''))">
     <div class="form-floating mb-1">
         <input required class="form-control" id="email" type="email" name="email" placeholder="Email" />
         <label for="email"> Email </label>
@@ -45,7 +45,7 @@ Login Into Your {{APPNAME}} account.
 
     function onSuccess(form, json) {
         if (json.success) {
-            window.location.href = json.next ?? "@b('')";
+            window.location.href = json.next ?? "@baseurl()";
         }
     }
  
