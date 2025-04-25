@@ -37,30 +37,39 @@ $freeze                     = Config::get('database.freeze');
 $dsn = "mysql:host={$host};dbname={$name}";
 R::setup($dsn, $username, $password);
 
-
 if ($freeze) {
     R::freeze(true);
 }
 
-$dispatcher = FastRoute\cachedDispatcher(function (RouteCollector $r) use ($cacheEnabled, $routeCollectionCacheFile) {
-    if ($cacheEnabled && file_exists($routeCollectionCacheFile)) {
-        $routes = include $routeCollectionCacheFile;
-    } else {
-        $routeCollector = new AutoRouteCollector();
-        $routes = $routeCollector->collectRoutes();
+$dispatcher = FastRoute\cachedDispatcher(
+    function (RouteCollector $r) use (
+        $cacheEnabled,
+        $routeCollectionCacheFile,
+    ) {
+        if ($cacheEnabled && file_exists($routeCollectionCacheFile)) {
+            $routes = include $routeCollectionCacheFile;
+        } else {
+            $routeCollector = new AutoRouteCollector();
+            $routes = $routeCollector->collectRoutes();
 
-        if ($cacheEnabled) {
-            $exportedRoutes = "<?php\n\nreturn " . var_export($routes, true) . ";\n";
-            file_put_contents($routeCollectionCacheFile, $exportedRoutes);
+            if ($cacheEnabled) {
+                $exportedRoutes =
+                    "<?php\n\nreturn " . var_export($routes, true) . ";\n";
+                file_put_contents($routeCollectionCacheFile, $exportedRoutes);
+            }
         }
-    }
-    foreach ($routes as $route) {
-        $r->addRoute($route['method'], $route['path'], [...$route['handler'], $route['middleware'] ?? []]);
-    }
-}, [
-    'cacheFile' => $cacheEnabled ? $routeCacheFile : false,
-    'cacheDisabled' => !$cacheEnabled,
-]);
+        foreach ($routes as $route) {
+            $r->addRoute($route['method'], $route['path'], [
+                ...$route['handler'],
+                $route['middleware'] ?? [],
+            ]);
+        }
+    },
+    [
+        'cacheFile' => $cacheEnabled ? $routeCacheFile : false,
+        'cacheDisabled' => !$cacheEnabled,
+    ],
+);
 
 $httpMethod = $_SERVER['REQUEST_METHOD'];
 $uri = makeRequestUri();
@@ -74,11 +83,13 @@ switch ($routeInfo[0]) {
         $handler = $notFoundHandler;
         if (is_string($handler) && strpos($handler, '@render') === 0) {
             $handler = function () use ($handler) {
-                return \Framework\Classes\Blade::view(str_replace('@render:', '', $handler));
+                return \Framework\Classes\Blade::view(
+                    str_replace('@render:', '', $handler),
+                );
             };
         }
         if (is_callable($handler)) {
-            handleResponse(($handler)());
+            handleResponse($handler());
             return;
         }
 
@@ -97,11 +108,13 @@ switch ($routeInfo[0]) {
         $handler = $routeInfo[1];
         if (is_string($handler[0]) && strpos($handler[0], '@render') === 0) {
             $handler[0] = function () use ($handler) {
-                return \Framework\Classes\Blade::view(str_replace('@render:', '', $handler[0]));
+                return \Framework\Classes\Blade::view(
+                    str_replace('@render:', '', $handler[0]),
+                );
             };
         }
         if (is_callable($handler[0])) {
-            handleResponse(($handler[0])());
+            handleResponse($handler[0]());
             return;
         }
 
@@ -111,7 +124,10 @@ switch ($routeInfo[0]) {
         if (isset($middlewares) && is_array($middlewares)) {
             foreach ($middlewares as $middleware) {
                 $middlewareInstance = new $middleware();
-                $response = call_user_func_array([$middlewareInstance, 'handle'], array_values($vars));
+                $response = call_user_func_array(
+                    [$middlewareInstance, 'handle'],
+                    array_values($vars),
+                );
                 if ($response !== true) {
                     handleResponse($response);
                     return;
@@ -120,7 +136,10 @@ switch ($routeInfo[0]) {
         }
 
         $controllerInstance = new $controller();
-        $response = call_user_func_array([$controllerInstance, $method], array_values($vars));
+        $response = call_user_func_array(
+            [$controllerInstance, $method],
+            array_values($vars),
+        );
         if ($response) {
             handleResponse($response);
         }
@@ -143,14 +162,16 @@ function makeRequestUri() {
     $dirname = dirname($script);
     $dirname = $dirname === '/' ? '' : $dirname;
     $basename = basename($script);
-    $uri = str_replace([$dirname, $basename], "", $_SERVER['REQUEST_URI']);
+    $uri = str_replace([$dirname, $basename], '', $_SERVER['REQUEST_URI']);
     $uri = trim(preg_replace('~/{2,}~', '/', explode('?', $uri)[0]), '/');
     return $uri === '' ? '/' : "/{$uri}";
 }
 
-
 function getCurrentUrl(array $params = []) {
-    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
+    $protocol =
+        isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on'
+        ? 'https'
+        : 'http';
     $current_url = "$protocol://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
     $url = parse_url($current_url, PHP_URL_PATH);
     $query = [];
